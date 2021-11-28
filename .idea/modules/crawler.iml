@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="crawler [file:/Users/fzybala/Documents/rushb/]" external.linked.project.path="$MODULE_DIR$/../../crawler" external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/../../crawler/target/scala-2.13/classes" />
+    <output-test url="file://$MODULE_DIR$/../../crawler/target/scala-2.13/test-classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../crawler">
+      <sourceFolder url="file://$MODULE_DIR$/../../crawler/src/main/scala" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../../crawler/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="library" name="sbt: com.lihaoyi:geny_2.13:0.6.10:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.lihaoyi:ujson_2.13:1.4.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.lihaoyi:upack_2.13:1.4.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.lihaoyi:upickle-core_2.13:1.4.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.lihaoyi:upickle-implicits_2.13:1.4.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.lihaoyi:upickle_2.13:1.4.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:implicitbox_2.13:0.2.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix-catnap_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix-eval_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix-execution_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix-internal-jctools_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix-java_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix-reactive_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix-tail_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.monix:monix_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.jsoup:jsoup:1.13.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.reactivestreams:reactive-streams:1.0.3:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-core_2.13:2.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-effect_2.13:2.1.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-kernel_2.13:2.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-macros_2.13:2.1.1:jar" level="project" />
+  </component>
+</module>
