@@ -1,0 +1,25 @@
+service: rushb
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: java8
+  lambdaHashingVersion: 20201221
+
+package:
+  individually: true
+
+functions:
+  downloader:
+    handler: rushb.downloader.lambda.DemoLinkHandler
+    package:
+      artifact: downloader/target/scala-2.13/rushb-downloader.jar
+    events:
+      - sqs: arn:aws:sqs:eu-west-1:743262912284:rushb-queue.fifo
+  parser:
+    handler: rushb.parser.lambda.DemoHandler
+    package:
+      artifact: parser/target/scala-2.13/rushb-parser.jar
+    events:
+      - sqs: arn:aws:sqs:eu-west-1:743262912284:rushb-parser-queue.fifo

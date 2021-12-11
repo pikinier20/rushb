@@ -5,7 +5,7 @@ import com.amazonaws.services.lambda.runtime.{Context, RequestHandler}
 import rushb.downloader.DemoDownloader
 import rushb.model.DemoLink
 
-import collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import upickle.default._
 
 class DemoLinkHandler extends RequestHandler[SQSEvent, Void] {
@@ -17,7 +17,7 @@ class DemoLinkHandler extends RequestHandler[SQSEvent, Void] {
       case (link, Right(value)) => SuccessHandler.handle(link, value)
       case (link, Left(value)) => ErrorHandler.handle(link, value)
     }
-    Void
+    null
   }
 
 

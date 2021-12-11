@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "059f36b4-87a3-44ab-83d2-661975830a7d",
+      "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
+      "body": "{\n  \"id\": \"61905\",\n  \"title\": \"NLG - TTC\",\n  \"date\": 1610743200000,\n  \"link\": \"https://www.hltv.org/download/demo/61905\"\n}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1545082649183",
+        "SenderId": "AIDAIENQZJOLO23YVJ4VO",
+        "ApproximateFirstReceiveTimestamp": "1545082649185"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "bd620f36c6ba5bc3a9fb9ca8106b25c9",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:eu-west-1:743262912284:rushb-parser-queue.fifo",
+      "awsRegion": "eu-west-1"
+    }
+  ]
+}
