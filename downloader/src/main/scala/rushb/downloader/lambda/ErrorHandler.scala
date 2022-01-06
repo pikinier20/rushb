@@ -1,7 +1,7 @@
 package rushb.downloader.lambda
 
 import rushb.model.DemoLink
-import org.apache.logging.log4j.{LogManager, Logger}
+import org.apache.logging.log4j.LogManager
 
 object ErrorHandler {
   val log = LogManager.getLogger(ErrorHandler.getClass)

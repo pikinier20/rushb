@@ -11,10 +11,11 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.duration.DurationInt
 
 class HltvHtmlCrawler(querySettings: QuerySettings) {
+  private val linksPerPage = 5
   def getLinks: Observable[Either[String, DemoLink]] =
     resultsPages
       .flatMap(processResultPage)
@@ -52,7 +53,7 @@ class HltvHtmlCrawler(querySettings: QuerySettings) {
 
   private def processResultPage(page: Document): Observable[Document] = {
     val demoLinks = page.select(".allres div.result-con > a[href]")
-      .asScala.toList.map(_.absUrl("href")).take(10)
+      .asScala.toList.map(_.absUrl("href")).take(linksPerPage)
     Observable.fromIterable(demoLinks)
       .delayOnNext(500.millisecond)
       .map(jsoupParseWithTimeout)

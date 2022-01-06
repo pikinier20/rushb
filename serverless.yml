@@ -23,6 +23,12 @@ package:
   individually: true
 
 functions:
+  crawler:
+    handler: rushb.crawler.lambda.LambdaHandler
+    package:
+      artifact: crawler/target/scala-2.13/rushb-crawler.jar
+    events:
+      - schedule: cron(0 1 * * ? *)
   downloader:
     handler: rushb.downloader.lambda.DemoLinkHandler
     package:

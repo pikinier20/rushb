@@ -31,6 +31,7 @@ lazy val downloader = project
 lazy val crawler = project
   .in(file("crawler"))
   .settings(
+    assemblyJarName in assembly := "rushb-crawler.jar",
     libraryDependencies ++= Seq(
       "io.monix" %% "monix" % "3.3.0",
       "org.jsoup" % "jsoup" % "1.13.1"
@@ -77,7 +78,7 @@ val commonSettings = Seq(
     "com.amazonaws" % "aws-java-sdk-s3" % "1.12.119",
     "com.amazonaws" % "aws-java-sdk-sqs" % "1.12.119",
     "com.amazonaws" % "aws-lambda-java-log4j2" % "1.2.0",
-    "org.apache.logging.log4j" % "log4j-api" % "2.14.1",
-    "org.apache.logging.log4j" % "log4j-core" % "2.14.1"
+    "org.apache.logging.log4j" % "log4j-api" % "2.17.1",
+    "org.apache.logging.log4j" % "log4j-core" % "2.17.1"
   )
 )
