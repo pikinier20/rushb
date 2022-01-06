@@ -21,7 +21,7 @@ object Prepare {
     )
     unrarInputStream match {
       case Some(is) =>
-        val path = Paths.get("unrar")
+        val path = Paths.get("/tmp/unrar")
         Files.copy(is, path, StandardCopyOption.REPLACE_EXISTING)
         None
       case None =>

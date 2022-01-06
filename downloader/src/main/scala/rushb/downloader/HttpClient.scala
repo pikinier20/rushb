@@ -1,11 +1,11 @@
 package rushb
 package downloader
 
-import java.io.{IOException, InputStream}
+import java.io.{BufferedInputStream, IOException, InputStream}
 import java.net.URL
 import scala.annotation.tailrec
 
-case class Response(contentType: String, is: InputStream)
+case class Response(contentType: String, contentLength: Long, is: InputStream)
 
 object HttpClient {
   private val userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11"
@@ -22,7 +22,8 @@ object HttpClient {
         userAgent
       )
       val contentType = con.getContentType
-      Right(Response(contentType,con.getInputStream))
+      val contentLength = con.getContentLength
+      Right(Response(contentType, contentLength, new BufferedInputStream(con.getInputStream)))
     } catch {
       case io: IOException if n > 0 =>
         println(s"Downloading from link: $link failed with exception: ${io.toString}")

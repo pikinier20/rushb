@@ -17,6 +17,7 @@ object SuccessHandler {
     s3.putObject(bucketName, demoLink(link.id), linkJson)
     val metadata = new ObjectMetadata()
     metadata.setContentType(res.contentType)
+    metadata.setContentLength(res.contentLength)
     s3.putObject(bucketName, demo(link.id), res.is, metadata)
 
     val request = new SendMessageRequest()

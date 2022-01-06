@@ -6,6 +6,18 @@ provider:
   name: aws
   runtime: java8
   lambdaHashingVersion: 20201221
+  region: eu-west-1
+  timeout: 900
+  memorySize: 2048
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 's3:*'
+            - 'sqs:*'
+          Resource:
+            - '*'
 
 package:
   individually: true

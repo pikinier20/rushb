@@ -16,7 +16,7 @@ class RarPreprocessor extends Preprocessors.Preprocessor[RarContent.type] {
       println("Finished downloading")
       println(s"Unraring to $tempDir")
       import scala.sys.process._
-      val path = Paths.get("unrar").toAbsolutePath
+      val path = Paths.get("/tmp/unrar").toAbsolutePath
       val permissions = Seq("chmod", "+x", path.toString).!
       val cmd = Seq(path.toString, "e", tempFile.getAbsolutePath)
       val process = Process(cmd, tempDir.toFile).!(ProcessLogger(s => println(s)))

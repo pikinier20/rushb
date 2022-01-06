@@ -13,9 +13,10 @@ class DemoLinkHandler extends RequestHandler[SQSEvent, Void] {
     val links = input.getRecords.asScala.toList
       .map(_.getBody)
       .map(json => read[DemoLink](json))
-    links.zip(new DemoDownloader(links).download()).foreach {
-      case (link, Right(value)) => SuccessHandler.handle(link, value)
-      case (link, Left(value)) => ErrorHandler.handle(link, value)
+    links.foreach { l => new DemoDownloader(l).download() match {
+        case Right(value) => SuccessHandler.handle(l, value)
+        case Left(value) => ErrorHandler.handle(l, value)
+      }
     }
     null
   }

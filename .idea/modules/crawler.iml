@@ -11,12 +11,27 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="library" name="sbt: com.amazonaws:aws-java-sdk-core:1.12.119:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.amazonaws:aws-java-sdk-kms:1.12.119:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.amazonaws:aws-java-sdk-s3:1.12.119:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.amazonaws:aws-java-sdk-sqs:1.12.119:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.amazonaws:aws-lambda-java-core:1.2.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.amazonaws:aws-lambda-java-events:3.11.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.amazonaws:aws-lambda-java-log4j2:1.2.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.amazonaws:jmespath-java:1.12.119:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-annotations:2.12.3:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-core:2.12.3:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-databind:2.12.3:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.12.3:jar" level="project" />
     <orderEntry type="library" name="sbt: com.lihaoyi:geny_2.13:0.6.10:jar" level="project" />
     <orderEntry type="library" name="sbt: com.lihaoyi:ujson_2.13:1.4.2:jar" level="project" />
     <orderEntry type="library" name="sbt: com.lihaoyi:upack_2.13:1.4.2:jar" level="project" />
     <orderEntry type="library" name="sbt: com.lihaoyi:upickle-core_2.13:1.4.2:jar" level="project" />
     <orderEntry type="library" name="sbt: com.lihaoyi:upickle-implicits_2.13:1.4.2:jar" level="project" />
     <orderEntry type="library" name="sbt: com.lihaoyi:upickle_2.13:1.4.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-codec:commons-codec:1.15:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-io:commons-io:2.11.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-logging:commons-logging:1.2:jar" level="project" />
     <orderEntry type="library" name="sbt: io.monix:implicitbox_2.13:0.2.0:jar" level="project" />
     <orderEntry type="library" name="sbt: io.monix:monix-catnap_2.13:3.3.0:jar" level="project" />
     <orderEntry type="library" name="sbt: io.monix:monix-eval_2.13:3.3.0:jar" level="project" />
@@ -26,6 +41,11 @@
     <orderEntry type="library" name="sbt: io.monix:monix-reactive_2.13:3.3.0:jar" level="project" />
     <orderEntry type="library" name="sbt: io.monix:monix-tail_2.13:3.3.0:jar" level="project" />
     <orderEntry type="library" name="sbt: io.monix:monix_2.13:3.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: joda-time:joda-time:2.8.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpclient:4.5.13:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpcore:4.4.13:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-api:2.14.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-core:2.14.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.jsoup:jsoup:1.13.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.reactivestreams:reactive-streams:1.0.3:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.6:jar" level="project" />
@@ -33,5 +53,6 @@
     <orderEntry type="library" name="sbt: org.typelevel:cats-effect_2.13:2.1.4:jar" level="project" />
     <orderEntry type="library" name="sbt: org.typelevel:cats-kernel_2.13:2.1.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.typelevel:cats-macros_2.13:2.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: software.amazon.ion:ion-java:1.0.2:jar" level="project" />
   </component>
 </module>
