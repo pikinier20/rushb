@@ -182,5 +182,6 @@ hs_err_pid*
 !.vscode/*.code-snippets
 
 .serverless/
+outputs/
 
 # End of https://www.toptal.com/developers/gitignore/api/scala,intellij,visualstudiocode,metals,macos,sbt

@@ -23,7 +23,8 @@ lazy val common = project
 lazy val downloader = project
   .in(file("downloader"))
   .settings(
-    assemblyJarName in assembly := "rushb-downloader.jar"
+    assemblyJarName in assembly := "rushb-downloader.jar",
+    assemblyOutputPath in assembly := file("outputs/rushb-downloader.jar")
   )
   .dependsOn(common)
   .settings(commonSettings)
@@ -43,7 +44,8 @@ lazy val crawler = project
 lazy val parser = project
   .in(file("parser"))
   .settings(
-    assemblyJarName in assembly := "rushb-parser.jar"
+    assemblyJarName in assembly := "rushb-parser.jar",
+    assemblyOutputPath in assembly := file("outputs/rushb-parser.jar")
   )
   .dependsOn(common)
   .settings(

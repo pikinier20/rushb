@@ -40,24 +40,8 @@ functions:
 custom:
   s3Sync:
     - bucketName: 'rushb-deployment-bucket'
-      localDir: downloader/target/scala-2.13/rushb-downloader.jar
+      localDir: outputs
       acl: public-read
-
-#  parser:
-#    handler: rushb.parser.lambda.DemoHandler
-#    package:
-#      artifact: parser/target/scala-2.13/rushb-parser.jar
-#    custom:
-#      env-resources:
-#        - DownloadedDemosQueue
-#        - DownloadedDemosS3
-#    events:
-#      - sqs:
-#          arn:
-#            Fn::GetAtt:
-#              - DownloadedDemosQueue
-#              - Arn
-
 
 resources:
   Resources:
@@ -89,47 +73,118 @@ resources:
         AccessControl: PublicRead
       DeletionPolicy: Delete
 
-    ecsCluster:
-      Type: 'AWS::ECS::Cluster'
-      Properties:
-        CapacityProviders:
-          - 'FARGATE_SPOT'
-        ClusterName: 'rush-b-cluster'
-        DefaultCapacityProviderStrategy:
-          - CapacityProvider: 'FARGATE_SPOT'
-            Weight: 1
+# TODO This is needed in order to create role and not hard-code it
+#    spotRole:
+#      Type: 'AWS::IAM::Role'
+#      Properties:
+#        RoleName: "AmazonEC2SpotFleetTaggingRole"
+#        AssumeRolePolicyDocument:
+#          Version: "2012-10-17"
+#          Statement:
+#            - Effect: Allow
+#              Principal:
+#                Service:
+#                  - spotfleet.amazonaws.com
+#              Action:
+#                - 'sts:AssumeRole'
+#                - 'ec2:*'
+#        AssumeRolePolicyDocument: '{"Version":"2012-10-17","Statement":[{"Sid":"","Effect":"Allow","Principal":{"Service":"spotfleet.amazonaws.com"},"Action":"sts:AssumeRole"}]}'
 
 
-    taskdefinition:
-      Type: 'AWS::ECS::TaskDefinition'
+    spotFleetDownloader:
+      Type: 'AWS::EC2::SpotFleet'
       Properties:
-        ContainerDefinitions:
-          - Name: rush-b
-            Cpu: 2
-            Essential: 'true'
-            Image: 'openjdk:8'
-            Memory: '2048'
-            Command:
-              - >-
-                /bin/sh -c "wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-downloader.jar && java -jar rushb-downloader.jar"
-            EntryPoint:
-              - sh
-              - '-c'
-            Environment:
-              - Name: "CF_linksQueue"
-                Value: !Ref linksQueue
-              - Name: "CF_downloadedDemosQueue"
-                Value: !Ref downloadedDemosQueue
-              - Name: "CF_demoBucket"
-                Value: !Ref downloadedDemosBucket
+        SpotFleetRequestConfigData:
+          TargetCapacity: 1
+          IamFleetRole: 'arn:aws:iam::531138740042:role/aws-ec2-spot-fleet-tagging-role'
+#            Fn::GetAtt:
+#              - spotRole
+#              - 'Arn'
+          LaunchSpecifications:
+            - ImageId: 'ami-04dd4500af104442f'
+              InstanceType: 'm3.medium'
+              UserData:
+                Fn::Base64:
+                  Fn::Sub:
+                  - #!/bin/bash -x
+                    cat > /etc/profile.d/load_env.sh << 'EOF'
+                    export CF_linksQueue=${LINKS_QUEUE}
+                    export CF_downloadedDemosQueue=${DOWNLOADED_DEMOS_QUEUE}
+                    wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-downloader.jar && java -jar rushb-downloader.jar
+                    EOF
+                  - { LINKS_QUEUE: !Ref linksQueue, DOWNLOADED_DEMOS_QUEUE: !Ref downloadedDemosQueue }
 
-    service:
-      Type: 'AWS::ECS::Service'
+    spotFleetParser:
+      Type: 'AWS::EC2::SpotFleet'
       Properties:
-        Cluster: !Ref ecsCluster
-        DesiredCount: '1'
-        TaskDefinition: !Ref taskdefinition
-        LaunchType: 'FARGATE'
+        SpotFleetRequestConfigData:
+          TargetCapacity: 1
+          IamFleetRole: 'arn:aws:iam::531138740042:role/aws-ec2-spot-fleet-tagging-role' #TODO change to run on your own
+          #            Fn::GetAtt:
+          #              - spotRole
+          #              - 'Arn'
+          LaunchSpecifications:
+            - ImageId: 'ami-04dd4500af104442f'
+              InstanceType: 'm3.medium'
+              UserData:
+                Fn::Base64:
+                  Fn::Sub:
+                    - #!/bin/bash -x
+                      cat > /etc/profile.d/load_env.sh << 'EOF'
+                      export CF_downloadedDemosQueue=${DOWNLOADED_DEMOS_QUEUE}
+                      wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-parser.jar && java -jar rushb-downloader.jar
+                      EOF
+                    - { DOWNLOADED_DEMOS_QUEUE: !Ref downloadedDemosQueue }
+
+
+#    capacityProvider:
+#      Type: 'AWS::ECS::CapacityProvider'
+#      Properties:
+#        AutoScalingGroupProvider:
+#          -  AutoScalingGroupArn:
+
+#    ecsCluster:
+#      Type: 'AWS::ECS::Cluster'
+#      Properties:
+#        CapacityProviders:
+#          - 'EC2'
+#        ClusterName: 'rush-b-cluster'
+#        DefaultCapacityProviderStrategy:
+#          - CapacityProvider: !Ref capacityProvider
+#            Weight: 1
+
+
+
+#    taskdefinition:
+#      Type: 'AWS::ECS::TaskDefinition'
+#      Properties:
+#        ContainerDefinitions:
+#          - Name: rush-b
+#            Cpu: 2
+#            Essential: 'true'
+#            Image: 'openjdk:8'
+#            Memory: '2048'
+#            Command:
+#              - >-
+#                /bin/sh -c "wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-downloader.jar && java -jar rushb-downloader.jar"
+#            EntryPoint:
+#              - sh
+#              - '-c'
+#            Environment:
+#              - Name: "CF_linksQueue"
+#                Value: !Ref linksQueue
+#              - Name: "CF_downloadedDemosQueue"
+#                Value: !Ref downloadedDemosQueue
+#              - Name: "CF_demoBucket"
+#                Value: !Ref downloadedDemosBucket
+
+#    service:
+#      Type: 'AWS::ECS::Service'
+#      Properties:
+#        Cluster: !Ref ecsCluster
+#        DesiredCount: '1'
+#        TaskDefinition: !Ref taskdefinition
+#        LaunchType: 'EC2_SPOT'
 
 #    spotLaunchTemplate:
 #      Type: "AWS::EC2::LaunchTemplate"
