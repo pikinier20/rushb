@@ -2,6 +2,10 @@ service: rushb
 
 frameworkVersion: '2'
 
+plugins:
+  - serverless-resources-env
+  - serverless-s3-sync
+
 provider:
   name: aws
   runtime: java8
@@ -29,15 +33,126 @@ functions:
       artifact: crawler/target/scala-2.13/rushb-crawler.jar
     events:
       - schedule: cron(0 1 * * ? *)
-  downloader:
-    handler: rushb.downloader.lambda.DemoLinkHandler
-    package:
-      artifact: downloader/target/scala-2.13/rushb-downloader.jar
-    events:
-      - sqs: arn:aws:sqs:eu-west-1:743262912284:rushb-queue.fifo
-  parser:
-    handler: rushb.parser.lambda.DemoHandler
-    package:
-      artifact: parser/target/scala-2.13/rushb-parser.jar
-    events:
-      - sqs: arn:aws:sqs:eu-west-1:743262912284:rushb-parser-queue.fifo
+    custom:
+      env-resources:
+        - linksQueue
+
+custom:
+  s3Sync:
+    - bucketName: 'rushb-deployment-bucket'
+      localDir: downloader/target/scala-2.13/rushb-downloader.jar
+      acl: public-read
+
+#  parser:
+#    handler: rushb.parser.lambda.DemoHandler
+#    package:
+#      artifact: parser/target/scala-2.13/rushb-parser.jar
+#    custom:
+#      env-resources:
+#        - DownloadedDemosQueue
+#        - DownloadedDemosS3
+#    events:
+#      - sqs:
+#          arn:
+#            Fn::GetAtt:
+#              - DownloadedDemosQueue
+#              - Arn
+
+
+resources:
+  Resources:
+    linksQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "links-queue.fifo"
+        FifoQueue: true
+        ContentBasedDeduplication: true
+
+    downloadedDemosQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "downloaded-demos-queue.fifo"
+        FifoQueue: true
+        ContentBasedDeduplication: true
+
+    downloadedDemosBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: "downloaded-demos-bucket"
+        AccessControl: PublicRead
+      DeletionPolicy: Delete
+
+    deploymentBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: "rushb-deployment-bucket"
+        AccessControl: PublicRead
+      DeletionPolicy: Delete
+
+    ecsCluster:
+      Type: 'AWS::ECS::Cluster'
+      Properties:
+        CapacityProviders:
+          - 'FARGATE_SPOT'
+        ClusterName: 'rush-b-cluster'
+        DefaultCapacityProviderStrategy:
+          - CapacityProvider: 'FARGATE_SPOT'
+            Weight: 1
+
+
+    taskdefinition:
+      Type: 'AWS::ECS::TaskDefinition'
+      Properties:
+        ContainerDefinitions:
+          - Name: rush-b
+            Cpu: 2
+            Essential: 'true'
+            Image: 'openjdk:8'
+            Memory: '2048'
+            Command:
+              - >-
+                /bin/sh -c "wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-downloader.jar && java -jar rushb-downloader.jar"
+            EntryPoint:
+              - sh
+              - '-c'
+            Environment:
+              - Name: "CF_linksQueue"
+                Value: !Ref linksQueue
+              - Name: "CF_downloadedDemosQueue"
+                Value: !Ref downloadedDemosQueue
+              - Name: "CF_demoBucket"
+                Value: !Ref downloadedDemosBucket
+
+    service:
+      Type: 'AWS::ECS::Service'
+      Properties:
+        Cluster: !Ref ecsCluster
+        DesiredCount: '1'
+        TaskDefinition: !Ref taskdefinition
+        LaunchType: 'FARGATE'
+
+#    spotLaunchTemplate:
+#      Type: "AWS::EC2::LaunchTemplate"
+#      Properties:
+#        LaunchTemplateName: "spot-template"
+#        ImageId:
+#        LaunchTemplateData:
+#          InstanceMarketOptions:
+#            MarketType: "spot"
+#            SpotOptions:
+#              InstanceInterruptionBehavior: "hibernate"
+
+#    autoScalingSpot:
+#      Type: "AWS::AutoScaling::AutoScalingGroup"
+#      Properties:
+#        MaxSize: "5"
+#        MinSize: "0"
+#        MixedInstancesPolicy:
+#          InstancesDistribution:
+#            SpotInstancePools: "4" # Max - 1 because in worst-case scenario we would like to have at least one worker
+#          LaunchTemplate:
+#            LaunchTemplateSpecification:
+#              Version: "1.0" #TODO
+#              LaunchTemplateName: "spot-template"
+
+
