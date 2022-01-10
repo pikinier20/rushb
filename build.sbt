@@ -69,9 +69,9 @@ val commonSettings = Seq(
     case x if x.endsWith("module-info.class") => MergeStrategy.discard
     case PathList(ps @ _*) if ps.last == "Log4j2Plugins.dat" =>
       Log4j2MergeStrategy.plugincache
+    case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
     case x =>
-      val oldStrategy = (assemblyMergeStrategy in assembly).value
-      oldStrategy(x)
+      MergeStrategy.first
   },
   libraryDependencies ++= Seq(
     "commons-io" % "commons-io" % "2.11.0",
@@ -84,3 +84,8 @@ val commonSettings = Seq(
     "org.apache.logging.log4j" % "log4j-core" % "2.17.1"
   )
 )
+
+lazy val dump = project
+  .in(file("dump"))
+  .dependsOn(parser, crawler, downloader)
+  .settings(commonSettings)

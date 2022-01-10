@@ -15,7 +15,7 @@ import scala.jdk.CollectionConverters._
 import scala.concurrent.duration.DurationInt
 
 class HltvHtmlCrawler(querySettings: QuerySettings) {
-  private val linksPerPage = 5
+  private val linksPerPage = 3
   def getLinks: Observable[Either[String, DemoLink]] =
     resultsPages
       .flatMap(processResultPage)
