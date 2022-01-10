@@ -6,6 +6,8 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../crawler">
       <sourceFolder url="file://$MODULE_DIR$/../../crawler/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../crawler/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../crawler/src/test/scala" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../crawler/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -44,8 +46,8 @@
     <orderEntry type="library" name="sbt: joda-time:joda-time:2.8.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpclient:4.5.13:jar" level="project" />
     <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpcore:4.4.13:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-api:2.14.1:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-core:2.14.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-api:2.17.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-core:2.17.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.jsoup:jsoup:1.13.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.reactivestreams:reactive-streams:1.0.3:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.6:jar" level="project" />

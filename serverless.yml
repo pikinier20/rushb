@@ -45,6 +45,43 @@ custom:
 
 resources:
   Resources:
+#    ec2Role:
+#      Type: AWS::IAM::Role
+#      Properties:
+#        Path: /
+#        RoleName: ec2Role
+#        AssumeRolePolicyDocument:
+#          Version: "2012-10-17"
+#          Statement:
+#            - Effect: "Allow"
+#              Principal:
+#                Service:
+#                  - ec2.amazonaws.com
+#              Action: sts:AssumeRole
+#        Policies:
+#          - PolicyName: myPolicyName
+#            PolicyDocument:
+#              Version: "2012-10-17"
+#              Statement:
+#                - Effect: "Allow"
+#                  Action:
+#                    - "s3:*"
+#                  Resource:
+#                    - '*'
+#                - Effect: "Allow"
+#                  Action:
+#                    - "SQS:SendMessage"
+#                    - "SQS:ReceiveMessage"
+#                    - "SQS:DeleteMessage"
+#                    - "SQS:GetQueueUrl"
+#                  Resource:
+#                    - "*"
+#    instanceProfile:
+#      Type: AWS::IAM::InstanceProfile
+#      Properties:
+#        Path: "/"
+#        Roles:
+#          - !Ref ec2Role
     linksQueue:
       Type: "AWS::SQS::Queue"
       Properties:
@@ -96,7 +133,7 @@ resources:
       Properties:
         SpotFleetRequestConfigData:
           TargetCapacity: 1
-          IamFleetRole: 'arn:aws:iam::531138740042:role/aws-ec2-spot-fleet-tagging-role'
+          IamFleetRole: 'arn:aws:iam::743262912284:role/aws-ec2-spot-fleet-tagging-role'
 #            Fn::GetAtt:
 #              - spotRole
 #              - 'Arn'
@@ -107,19 +144,22 @@ resources:
                 Fn::Base64:
                   Fn::Sub:
                   - #!/bin/bash -x
-                    cat > /etc/profile.d/load_env.sh << 'EOF'
-                    export CF_linksQueue=${LINKS_QUEUE}
-                    export CF_downloadedDemosQueue=${DOWNLOADED_DEMOS_QUEUE}
-                    wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-downloader.jar && java -jar rushb-downloader.jar
-                    EOF
+                    export CF_linksQueue=${LINKS_QUEUE} && \
+                    export CF_downloadedDemosQueue=${DOWNLOADED_DEMOS_QUEUE} && \
+                    sudo yum install -y java-1.8.0-openjdk-devel && \
+                    wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-downloader.jar && \
+                    java -jar rushb-downloader.jar
                   - { LINKS_QUEUE: !Ref linksQueue, DOWNLOADED_DEMOS_QUEUE: !Ref downloadedDemosQueue }
+              IamInstanceProfile:
+                Arn: "arn:aws:iam::743262912284:instance-profile/rushbRole"
+
 
     spotFleetParser:
       Type: 'AWS::EC2::SpotFleet'
       Properties:
         SpotFleetRequestConfigData:
           TargetCapacity: 1
-          IamFleetRole: 'arn:aws:iam::531138740042:role/aws-ec2-spot-fleet-tagging-role' #TODO change to run on your own
+          IamFleetRole: 'arn:aws:iam::743262912284:role/aws-ec2-spot-fleet-tagging-role' #TODO change to run on your own
           #            Fn::GetAtt:
           #              - spotRole
           #              - 'Arn'
@@ -130,12 +170,12 @@ resources:
                 Fn::Base64:
                   Fn::Sub:
                     - #!/bin/bash -x
-                      cat > /etc/profile.d/load_env.sh << 'EOF'
-                      export CF_downloadedDemosQueue=${DOWNLOADED_DEMOS_QUEUE}
-                      wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-parser.jar && java -jar rushb-downloader.jar
-                      EOF
+                      export CF_downloadedDemosQueue=${DOWNLOADED_DEMOS_QUEUE} && \
+                      sudo yum install -y java-1.8.0-openjdk-devel && \
+                      wget https://rushb-deployment-bucket.s3.eu-west-1.amazonaws.com/rushb-parser.jar && java -jar rushb-parser.jar
                     - { DOWNLOADED_DEMOS_QUEUE: !Ref downloadedDemosQueue }
-
+              IamInstanceProfile:
+                Arn: "arn:aws:iam::743262912284:instance-profile/rushbRole"
 
 #    capacityProvider:
 #      Type: 'AWS::ECS::CapacityProvider'

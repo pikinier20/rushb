@@ -8,8 +8,8 @@ import rushb.model.DemoLink
 import scala.jdk.CollectionConverters._
 import upickle.default._
 
-class DemoLinkHandler extends RequestHandler[SQSEvent, Void] {
-  override def handleRequest(input: SQSEvent, context: Context): Void = {
+class DemoLinkHandler {
+  def handleMessages(input: SQSEvent, context: Context): Void = {
     val links = input.getRecords.asScala.toList
       .map(_.getBody)
       .map(json => read[DemoLink](json))
