@@ -8,6 +8,6 @@ object SuccessHandler {
   def handle(link: DemoLink, index: Int, res: String): Unit = {
     val metadata = new ObjectMetadata()
     metadata.setContentType("application/json")
-    s3.putObject(bucketName, parsedDemo(link.id, index), res)
+    s3.putObject(parsedBucketName, parsedDemo(link.id, index), res)
   }
 }
