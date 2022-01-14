@@ -24,20 +24,18 @@ package:
 
 functions:
   crawler:
-    handler: rushb.crawler.lambda.LambdaHandler
+    handler: rushb.crawler.rushb.transformer.lambda.LambdaHandler
     package:
-      artifact: crawler/target/scala-2.13/rushb-crawler.jar
+      artifact: outputs/rushb-crawler.jar
     events:
       - schedule: cron(0 1 * * ? *)
   downloader:
-    handler: rushb.downloader.lambda.DemoLinkHandler
+    handler: rushb.downloader.rushb.transformer.lambda.DemoLinkHandler
     package:
-      artifact: downloader/target/scala-2.13/rushb-downloader.jar
+      artifact: outputs/rushb-downloader.jar
     events:
-      - sqs: arn:aws:sqs:eu-west-1:743262912284:rushb-queue.fifo
-  parser:
-    handler: rushb.parser.lambda.DemoHandler
-    package:
-      artifact: parser/target/scala-2.13/rushb-parser.jar
-    events:
-      - sqs: arn:aws:sqs:eu-west-1:743262912284:rushb-parser-queue.fifo
+      - sqs:
+          arn: arn:aws:sqs:eu-west-1:743262912284:rushb-queue.fifo
+          batchSize: 1
+          functionResponseType: ReportBatchItemFailures
+

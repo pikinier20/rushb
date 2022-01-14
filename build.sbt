@@ -23,7 +23,8 @@ lazy val common = project
 lazy val downloader = project
   .in(file("downloader"))
   .settings(
-    assemblyJarName in assembly := "rushb-downloader.jar"
+    assemblyJarName in assembly := "rushb-downloader.jar",
+    assemblyOutputPath in assembly := file("outputs/rushb-downloader.jar")
   )
   .dependsOn(common)
   .settings(commonSettings)
@@ -32,6 +33,7 @@ lazy val crawler = project
   .in(file("crawler"))
   .settings(
     assemblyJarName in assembly := "rushb-crawler.jar",
+    assemblyOutputPath in assembly := file("outputs/rushb-crawler.jar"),
     libraryDependencies ++= Seq(
       "io.monix" %% "monix" % "3.3.0",
       "org.jsoup" % "jsoup" % "1.13.1"
@@ -43,7 +45,8 @@ lazy val crawler = project
 lazy val parser = project
   .in(file("parser"))
   .settings(
-    assemblyJarName in assembly := "rushb-parser.jar"
+    assemblyJarName in assembly := "rushb-parser.jar",
+    assemblyOutputPath in assembly := file("outputs/rushb-parser.jar")
   )
   .dependsOn(common)
   .settings(
@@ -54,6 +57,16 @@ lazy val parser = project
     )
   )
   .settings(commonSettings)
+
+lazy val transformer = project
+  .in(file("transformer"))
+  .settings(
+    assemblyJarName in assembly := "rushb-transformer.jar",
+    assemblyOutputPath in assembly := file("outputs/rushb-transformer.jar")
+  )
+  .dependsOn(common)
+  .settings(commonSettings)
+
 
 
 val commonSettings = Seq(
@@ -67,9 +80,9 @@ val commonSettings = Seq(
     case x if x.endsWith("module-info.class") => MergeStrategy.discard
     case PathList(ps @ _*) if ps.last == "Log4j2Plugins.dat" =>
       Log4j2MergeStrategy.plugincache
+    case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
     case x =>
-      val oldStrategy = (assemblyMergeStrategy in assembly).value
-      oldStrategy(x)
+      MergeStrategy.first
   },
   libraryDependencies ++= Seq(
     "commons-io" % "commons-io" % "2.11.0",

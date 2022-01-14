@@ -12,12 +12,13 @@ object AWSUtils {
   val region: Regions = Regions.EU_WEST_1
   private val log = LogManager.getLogger(getClass)
 
-  def bucketName: String = sys.env.getOrElse("CF_demoBucket", "csgo-demos-rushb")
+  def bucketName: String = "csgo-demos-rushb"
   def parsedBucketName: String = "csgo-parsed-demos-rushb"
+  def dataLakeBucketName: String = "csgo-datalake-rushb"
   val s3: AmazonS3 = AmazonS3ClientBuilder.standard().withRegion(region).build()
 
-  def crawlerQueueName: String = sys.env.getOrElse("CF_linksQueue", "https://sqs.eu-west-1.amazonaws.com/743262912284/rushb-queue.fifo")
-  def downloaderQueueName: String = sys.env.getOrElse("CF_downloadedDemosQueue","https://sqs.eu-west-1.amazonaws.com/743262912284/rushb-parser-queue.fifo")
+  def crawlerQueueName: String = "https://sqs.eu-west-1.amazonaws.com/743262912284/rushb-queue.fifo"
+  def downloaderQueueName: String = "https://sqs.eu-west-1.amazonaws.com/743262912284/rushb-parser-queue.fifo"
   val sqs: AmazonSQS = AmazonSQSClientBuilder.standard().withRegion(region).build()
 
   def demoLink(id: String) = s"demolink${id}.json"
