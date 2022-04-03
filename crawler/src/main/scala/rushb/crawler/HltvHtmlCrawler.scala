@@ -21,15 +21,6 @@ class HltvHtmlCrawler(querySettings: QuerySettings) {
       .flatMap(processResultPage)
       .map(getDemo)
 
-  private def querySettingsToString(additionalOffset: Int): String = {
-    val hasDemo: (String, String) = "content" -> "demo"
-    val offset: (String, String) = "offset" -> (querySettings.offset + additionalOffset).toString
-    val startDate: Option[(String, String)] = querySettings.from.map("startDate" -> _)
-    val endDate: Option[(String, String)] = querySettings.to.map("endDate" -> _)
-    val params = Seq(hasDemo, offset) ++ startDate ++ endDate
-    params.map { case (a, b) => s"$a=$b" }.mkString("?","&","")
-  }
-
   private def jsoupParseWithTimeout(link: String): Document = try {
     Jsoup.parse(new URL(link), 5000)
   } catch {
@@ -44,8 +35,11 @@ class HltvHtmlCrawler(querySettings: QuerySettings) {
     Observable(0)
       .map(_ * 100)
       .map(offset => {
-        val link = s"https://www.hltv.org/results${querySettingsToString(offset)}"
-        println(link)
+        val nextQuerySettings = querySettings
+          .copy(
+            offset = querySettings.offset.fold(Some(offset))(o => Some(o + offset))
+          ).toQueryString
+        val link = s"https://www.hltv.org/results$nextQuerySettings"
         link
       })
       .delayOnNext(500.millisecond)

@@ -42,7 +42,8 @@ class LambdaHandler extends RequestStreamHandler {
     log.info(s"Current date: ${new Date(initialDate).toString}")
     log.info(s"Querying demos with delay: $delayDays days.")
     log.info(s"Demos date: ${new Date(initialDate - delay).toString}")
-    QuerySettings(initialDate - delay, initialDate - delay)
+    import QuerySettings.formatDate
+    QuerySettings(from = Some(initialDate - delay), to = Some(initialDate - delay))
   }
 
   def putLinkToSqs(link: DemoLink): Unit = {
