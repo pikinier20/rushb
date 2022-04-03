@@ -17,15 +17,14 @@ class DemoHandler extends RequestHandler[SQSEvent, Void] {
     val ids = input.getRecords.asScala.toList
       .map(_.getBody)
 
-    val demos: Seq[DemoObject] = ids.map { id =>
+    ids.flatMap { id =>
       val linkIs: InputStream = s3.getObject(bucketName, demoLink(id)).getObjectContent
       val link = read[DemoLink](linkIs)
       val demoS3Obj = s3.getObject(bucketName, demo(id))
       val demoIs: InputStream = demoS3Obj.getObjectContent
-      DemoObject(demoIs, ContentType.parse(demoS3Obj.getObjectMetadata.getContentType), link)
+      val d = DemoObject(demoIs, ContentType.parse(demoS3Obj.getObjectMetadata.getContentType), link)
+      Parser.parseDemo(d).map(d -> _)
     }
-
-    demos.flatMap { d => Parser.parseDemo(d).map(d -> _) }
       .zipWithIndex
       .foreach {
         case ((demoObj, Left(err)), _) => ErrorHandler.handle(demoObj.link, err)

@@ -25,7 +25,14 @@ object Main extends App {
           println("Parsing success")
           SuccessHandler.handle(demoObj.link, i, json)
       }
-    new File("/tmp").listFiles().filter(f => f.getName.contains("demo")).foreach(_.delete())
+    new File("/tmp").listFiles().filter(f => f.getName.contains("demo")).foreach(deleteRecur)
+  }
+
+  def deleteRecur(f: File): Unit = if(f.isDirectory) {
+    f.listFiles().foreach(deleteRecur)
+    f.delete()
+  } else {
+    f.delete()
   }
 
   Prepare.prepare()

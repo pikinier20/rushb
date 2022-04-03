@@ -5,6 +5,9 @@ import rushb.parser.{Prepare, RarContent}
 
 import java.io.{File, InputStream}
 import java.nio.file.{Files, Paths}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, Future, blocking}
 
 class RarPreprocessor extends Preprocessors.Preprocessor[RarContent.type] {
   override def extract(is: InputStream): Seq[Either[String, InputStream]] =
@@ -19,9 +22,19 @@ class RarPreprocessor extends Preprocessors.Preprocessor[RarContent.type] {
       val path = Paths.get("/tmp/unrar").toAbsolutePath
       val permissions = Seq("chmod", "+x", path.toString).!
       val cmd = Seq(path.toString, "e", tempFile.getAbsolutePath)
-      val process = Process(cmd, tempDir.toFile).!(ProcessLogger(s => println(s)))
-      if (process != 0) {
-        Seq(Left(s"Unraring failed with value $process"))
+      val process = Process(cmd, tempDir.toFile).run(ProcessLogger(s => println(s)))
+      val f = Future(blocking(process.exitValue()))
+      val returnValue = try {
+        Await.result(f, 15.seconds)
+      } catch {
+        case e: Exception =>
+          process.destroy()
+          sys.exit(-1)
+          process.exitValue()
+      }
+      if (returnValue != 0) {
+        sys.exit(-1)
+        Seq(Left(s"Unraring failed with value $returnValue"))
       } else {
         println("Unraring finished")
         tempFile.delete()

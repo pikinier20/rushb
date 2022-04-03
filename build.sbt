@@ -62,7 +62,8 @@ lazy val transformer = project
   .in(file("transformer"))
   .settings(
     assemblyJarName in assembly := "rushb-transformer.jar",
-    assemblyOutputPath in assembly := file("outputs/rushb-transformer.jar")
+    assemblyOutputPath in assembly := file("outputs/rushb-transformer.jar"),
+    libraryDependencies += "io.monix" %% "monix" % "3.3.0"
   )
   .dependsOn(common)
   .settings(commonSettings)
