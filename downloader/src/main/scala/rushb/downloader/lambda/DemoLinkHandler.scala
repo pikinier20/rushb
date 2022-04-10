@@ -8,11 +8,14 @@ import rushb.model.DemoLink
 import scala.jdk.CollectionConverters._
 import upickle.default._
 
-class DemoLinkHandler {
-  def handleMessages(input: SQSEvent, context: Context): Void = {
+class DemoLinkHandler extends RequestHandler[SQSEvent, Void] {
+  def handleRequest(input: SQSEvent, context: Context): Void = {
     val links = input.getRecords.asScala.toList
       .map(_.getBody)
       .map(json => read[DemoLink](json))
+    println(s"Lambda triggered for following links:")
+    links.foreach(l => println(l.link))
+    println()
     links.foreach { l => new DemoDownloader(l).download() match {
         case Right(value) => SuccessHandler.handle(l, value)
         case Left(value) => ErrorHandler.handle(l, value)

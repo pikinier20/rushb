@@ -2,6 +2,7 @@ package rushb.crawler
 
 import java.text.SimpleDateFormat
 import java.util.Date
+import scala.language.implicitConversions
 
 case class QuerySettings(from: Option[String] = None, to: Option[String] = None, offset: Option[Int] = None, stars: Option[Int] = None, maps: Seq[String] = Seq.empty) {
   def toQueryString: String =
