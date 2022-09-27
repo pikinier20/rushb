@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
 import com.amazonaws.services.sqs.model.SendMessageRequest
 import monix.execution.Scheduler
 import org.apache.logging.log4j.LogManager
-import rushb.crawler.{HltvHtmlCrawler, QuerySettings}
+import rushb.crawler.{DemoLinksCrawler, QuerySettings}
 import rushb.model.DemoLink
 
 import java.io.{InputStream, OutputStream}
@@ -30,7 +30,7 @@ class LambdaHandler extends RequestStreamHandler {
 
   override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
     val querySettings = calculateQuerySettings
-    val crawler = new HltvHtmlCrawler(querySettings)
+    val crawler = new DemoLinksCrawler(querySettings)
     val future = crawler.getLinks.foreach {
       case Left(value) => log.error(value)
       case Right(value) => putLinkToSqs(value)
